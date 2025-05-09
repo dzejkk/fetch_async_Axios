@@ -66,29 +66,33 @@ import "./style.css";
 
 /* AXIOS */
 
-import axios from "axios";
-const API_URL = "https://jsonplaceholder.typicode.com/users";
+import { getUsers } from "./fetchDataAxios";
 
-async function getUsers() {
-  try {
-    const response = await axios.get(API_URL);
-    console.log(response);
-
-    return {
-      parsedData: parseAPI(response),
-    };
-  } catch (error) {
+getUsers()
+  .then(renderUsers)
+  .catch((error) => {
     console.log(error);
-  }
-}
-
-getUsers();
-
-function parseAPI(dataAPI) {
-  const { data } = dataAPI;
-  console.log(data);
-
-  data.forEach((user) => {
-    console.log(user.name);
   });
+
+function renderUsers({ parsedData }) {
+  //console.log(parsedData);
+  const container = document.querySelector("#app");
+  let template = "";
+
+  template = parsedData
+    .map((item) => {
+      const { name, address, id, email } = item;
+      return `
+              <div class="card">
+                <div class="name-container">
+                    <p>${id}</p>
+                    <h1>${name}</h1>
+                </div>
+                <h2>${email}</h2>
+                <p>${address.city}</p>
+              </div>`;
+    })
+    .join("");
+
+  container.innerHTML += template;
 }
